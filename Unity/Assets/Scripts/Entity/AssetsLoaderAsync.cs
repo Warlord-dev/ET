@@ -1,9 +1,24 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Model
 {
-	public class AssetBundleLoaderAsync : Entity
+	[ObjectEvent]
+	public class AssetsLoaderAsyncEvent : ObjectEvent<AssetsLoaderAsync>, IUpdate, IAwake<AssetBundle>
+	{
+		public void Awake(AssetBundle assetBundle)
+		{
+			this.Get().Awake(assetBundle);
+		}
+		
+		public void Update()
+		{
+			this.Get().Update();
+		}
+	}
+
+	public class AssetsLoaderAsync : Disposer, IUpdate
 	{
 		private AssetBundle assetBundle;
 
@@ -11,9 +26,9 @@ namespace Model
 
 		private TaskCompletionSource<bool> tcs;
 
-		public AssetBundleLoaderAsync(AssetBundle assetBundle)
+		public void Awake(AssetBundle ab)
 		{
-			this.assetBundle = assetBundle;
+			this.assetBundle = ab;
 		}
 
 		public void Update()
@@ -23,7 +38,7 @@ namespace Model
 				return;
 			}
 
-			TaskCompletionSource<bool> t = this.tcs;
+			TaskCompletionSource<bool> t = tcs;
 			t.SetResult(true);
 		}
 
@@ -34,6 +49,9 @@ namespace Model
 				return;
 			}
 			base.Dispose();
+
+			this.assetBundle = null;
+			this.request = null;
 		}
 
 		public async Task<UnityEngine.Object[]> LoadAllAssetsAsync()
