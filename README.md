@@ -1,5 +1,3 @@
-# English: please use your browser to translate to english
-
 # ET开源版本不再维护，后续只维护闭源预制游戏
 
 # ET类魔兽世界预制游戏与课程上架，附赠代码，课程大纲：
